@@ -1,0 +1,351 @@
+body, html {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	max-width: 1600px;
+	max-height: 1200px;
+}
+body {
+	color: #f2f2f2;
+	font-family: 'OpenSans';
+	font-size: 1em;
+	font-weight: 300;
+	line-height: 150%;
+	background: #222;
+	overflow: hidden;
+	padding: 0;
+}
+a {
+	color: #c95b59;
+	font-weight: 400;
+	text-decoration: none;
+	border-bottom: .1rem dashed rgba(206, 94, 92, 0.48);
+}
+a:hover,
+a:active {
+	color: #c95b59;
+}
+a:hover {
+	text-decoration: none;
+	border-bottom-style: solid;
+}
+i, em { font-style: italic; }
+b, strong { font-weight: 700; }
+h1, h2, h3, h4, h5, h6 { font-weight: 700; }
+h1 { font-size: 1.8rem; line-height: 2.2rem; }
+h2 { font-size: 1.4rem; line-height: 1.7rem; }
+h3 { font-size: 1.2rem; line-height: 1.5rem; }
+h4, h5, h6 { font-size: 1rem; line-height: 1.3rem; }
+
+.propaganda {
+	font-family: "Courier New";
+	font-size: 1.2rem;
+	line-height: 1.5rem;
+	font-weight: 700;
+	opacity: .7;
+	padding: 1rem 0;
+}
+.propaganda .x {
+	color: #999;
+	font-weight: 100;
+	text-decoration: line-through;
+	text-decoration-color: red;
+	text-decoration-style: double;
+}
+.propaganda .x b {
+	position: relative;
+	left: .5rem;
+	color: #f2f2f2;
+	display: inline-block;
+	font-weight: 700;
+	text-decoration: none;
+}
+html.awake .propaganda .x {
+	color: #f2f2f2;
+	font-weight: 700;
+	text-decoration: none;
+}
+html.awake .propaganda .x b {
+	display: none;
+}
+
+#header {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 3rem;
+	box-sizing: border-box;
+	padding: 0 2rem;
+}
+
+#header .propaganda {
+	opacity: .2;
+	font-size: 1.8rem;
+	line-height: 3rem;
+	font-weight: 100;
+	text-align: center;
+	transition: opacity 2.5s ease;
+}
+
+html.awake #header .propaganda {
+	opacity: 1;
+}
+
+#content {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	padding: 5rem 2rem 8rem 2rem;
+}
+#content .propaganda {
+	text-align: center;
+}
+
+#mrprism {
+	position: relative;
+	float: left;
+	width: 35%;
+	height: 100%;
+	margin-right: 2%;
+}
+#mrprism .body {
+	position: relative;
+	display: block;
+	width: 22rem;
+	height: auto;
+	margin: 0 auto;
+}
+#mrprism img {
+	position: relative;
+	z-index: 30;
+	width: 22rem;
+	height: auto;
+}
+#mrprism .eye {
+	position: absolute;
+	right: 50%;
+	top: 50%;
+	z-index: 5;
+	display: block;
+	width: 5rem;
+	height: 5rem;
+	border-radius: 50%;
+	background: #bbb;
+	margin-right: -2.5rem;
+	margin-top: 0;
+}
+#mrprism .eye:before {
+	/* eyelid */
+	position: absolute;
+	left: 0;
+	top: -15%;
+	z-index: 15;
+	content: ' ';
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: #222;
+	opacity: .8;
+}
+html.awake #mrprism .eye:before {
+	/* eyelid */
+	top: -75%;
+	transition: top .1s ease;
+	opacity: 1;
+}
+html.awake #mrprism.blinking .eye:before {
+	/* eyelid */
+	top: -10%;
+}
+html.falling-asleep #mrprism .eye:before {
+	/* eyelid */
+	top: -15%;
+	transition: top 2.5s ease;
+}
+html.waking-up #mrprism .eye:before {
+	/* eyelid */
+	top: -75%;
+	transition: top .3s ease;
+}
+#mrprism .eye:after {
+	/* pupil */
+	position: absolute;
+	right: 1.75rem;
+	bottom: 1.4rem;
+	z-index: 10;
+	content: ' ';
+	display: none;
+	width: 1.5rem;
+	height: 1.5rem;
+	border-radius: 50%;
+	background: #222;
+	transition: bottom .5s ease, right .5s ease;
+}
+html.awake #mrprism .eye:after {
+	/* pupil */
+	display: block;
+	animation-name: pupilMovement;
+	animation-duration: 12s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+	animation-direction: alternate;
+	animation-delay: 1s;
+}
+@keyframes pupilMovement {
+	0% { right: 1.75rem; bottom: 1.4rem; }
+	25% { right: 1.75rem; bottom: 1.4rem; }
+	26% { right: 1rem; bottom: 0.5rem; }
+	36% { right: 1rem; bottom: 0.5rem; }
+	37% { right: 2.6rem; bottom: 0.4rem; }
+	47% { right: 2.6rem; bottom: 0.4rem; }
+	48% { right: 1rem; bottom: 0.5rem; }
+	58% { right: 1rem; bottom: 0.5rem; }
+	68% { right: 1.75rem; bottom: 1.4rem; }
+	100% { right: 1.75rem; bottom: 1.4rem; }
+}
+
+#watch {
+	position: relative;
+	float: left;
+	width: 35%;
+	height: 100%;
+	opacity: .9;
+}
+#watch .video-frame {
+	position: relative;
+	width: 20rem;
+	height: 15rem;
+	overflow: hidden;
+	box-sizing: border-box;
+	border: .3rem solid #444;
+	border-radius: 1rem;
+	margin: 0 auto;
+}
+#watch .tv-static {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 20;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	transition: opacity .5s ease;
+}
+html.awake #watch .tv-static {
+	opacity: .2;
+}
+#watch video.dream {
+	width: 100%;
+	height: auto;
+	opacity: 1;
+	transition: opacity .5s ease;
+}
+html.awake #watch video.dream {
+	opacity: 0;
+}
+#watch video.webcam {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 10;
+	width: 100%;
+	height: auto;
+	opacity: .6;
+	animation-name: videoPan;
+	animation-duration: 12s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+	animation-direction: alternate;
+	animation-delay: 1s;
+	transition: left .5s ease, top .5s ease, width .5s ease;
+}
+#watch .video-cover {
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	z-index: 15;
+	background: #000;
+	opacity: 0;
+}
+html.falling-asleep #watch .video-cover {
+	opacity: 1;
+	transition: opacity 2.5s ease;
+}
+@keyframes videoPan {
+	0% { left: 0; top: 0; width: 100%; }
+	25% { left: -50%; top: -50%; width: 200%; }
+	26% { left: -100%; top: -100%; width: 200%; }
+	36% { left: -100%; top: -100%; width: 200%; }
+	37% { left: 0%; top: -100%; width: 200%; }
+	47% { left: 0%; top: -100%; width: 200%; }
+	48% { left: -100%; top: -100%; width: 200%; }
+	58% { left: -100%; top: -100%; width: 200%; }
+	68% { left: -50%; top: -50%; width: 200%; }
+	100% { left: 0; top: 0; width: 100%; }
+}
+#pay {
+	position: relative;
+	float: left;
+	width: 10%;
+	opacity: 0;
+	transition: opacity 2.5s ease, width 2.5s ease;
+	margin-right: 2%;
+}
+html.awake #pay {
+	width: 26%;
+	opacity: 1;
+}
+#pay .qrcode-wrap {
+	width: 75%;
+	max-width: 14rem;
+	height: auto;
+	opacity: .7;
+	margin: 3rem auto 0 auto;
+}
+#pay .qrcode {
+	margin: 0 auto;
+}
+#pay .propaganda {
+	font-size: .9rem;
+	line-height: 1.3rem;
+	font-weight: 100;
+	text-align: center;
+}
+#footer {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 6rem;
+	box-sizing: border-box;
+	padding: 0 2rem;
+}
+
+#footer .propaganda {
+	text-align: right;
+}
+
+#audio {
+	position: absolute;
+	left: 0;
+	bottom: .5rem;
+	width: 100%;
+}
+audio {
+	display: block;
+	opacity: .1;
+	transform: scale(.6);
+	transition: .3s opacity;
+	text-align: center;
+	margin: 0 auto;
+}
+audio:hover {
+	opacity: .3;
+}

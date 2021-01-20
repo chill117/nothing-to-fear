@@ -1,0 +1,28 @@
+{
+  "name": "nothing-to-fear",
+  "version": "1.0.0",
+  "description": "Nothing to hide, nothing to fear. Pay a price for your privacy or lack thereof.",
+  "main": "server.js",
+  "scripts": {
+    "build": "make all",
+    "server": "node ./server.js",
+    "start": "npm run build && npm run server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "Charles Hill",
+    "email": "chill@degreesofzero.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "async": "3.2.0",
+    "express": "4.17.1",
+    "express-session": "1.17.1",
+    "jquery": "3.5.1",
+    "lnurl": "0.11.1",
+    "open-sans-fontface": "https://github.com/chill117/open-sans/archive/1.4.2.tar.gz",
+    "qrcode": "1.4.4",
+    "underscore": "1.12.0",
+    "ws": "7.4.2"
+  }
+}
