@@ -11,7 +11,7 @@ body {
 	font-size: 1em;
 	font-weight: 300;
 	line-height: 150%;
-	background: #222;
+	background: #222 url('../images/bg-text.png') 0 repeat;
 	overflow: hidden;
 	padding: 0;
 }
@@ -94,8 +94,9 @@ html.awake #header .propaganda {
 
 #content {
 	position: relative;
-	display: inline-block;
-	vertical-align: top;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	width: 100%;
 	height: 100%;
 	box-sizing: border-box;
@@ -103,6 +104,14 @@ html.awake #header .propaganda {
 }
 #content .propaganda {
 	text-align: center;
+}
+#content .wrap {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	align-self: center;
+	width: 100%;
+	height: auto;
 }
 
 #mrprism {
@@ -131,52 +140,55 @@ html.awake #header .propaganda {
 	top: 50%;
 	z-index: 5;
 	display: block;
-	width: 5rem;
-	height: 5rem;
+    width: 5.1rem;
+    height: 5.1rem;
 	border-radius: 50%;
-	background: #bbb;
+	overflow: hidden;
 	margin-right: -2.5rem;
 	margin-top: 0;
 }
-#mrprism .eye:before {
-	/* eyelid */
+#mrprism .eyeball {
+	position: relative;
+	z-index: 10;
+	left: .1rem;
+	top: .2rem;
+	width: 4.9rem;
+	height: 4.9rem;
+	background: #bbb;
+	border-radius: 50%;
+}
+#mrprism .eyelid {
 	position: absolute;
 	left: 0;
 	top: -15%;
-	z-index: 15;
-	content: ' ';
+	z-index: 20;
 	display: block;
 	width: 100%;
 	height: 100%;
 	background: #222;
 	opacity: .8;
 }
-html.awake #mrprism .eye:before {
-	/* eyelid */
+html.awake #mrprism .eyelid {
 	top: -75%;
 	transition: top .1s ease;
 	opacity: 1;
 }
-html.awake #mrprism.blinking .eye:before {
-	/* eyelid */
+html.awake #mrprism.blinking .eyelid {
 	top: -10%;
 }
-html.falling-asleep #mrprism .eye:before {
-	/* eyelid */
+html.falling-asleep #mrprism .eyelid {
 	top: -15%;
 	transition: top 2.5s ease;
 }
-html.waking-up #mrprism .eye:before {
-	/* eyelid */
+html.waking-up #mrprism .eyelid {
 	top: -75%;
 	transition: top .3s ease;
 }
-#mrprism .eye:after {
-	/* pupil */
+#mrprism .pupil {
 	position: absolute;
 	right: 1.75rem;
 	bottom: 1.4rem;
-	z-index: 10;
+	z-index: 15;
 	content: ' ';
 	display: none;
 	width: 1.5rem;
@@ -185,8 +197,7 @@ html.waking-up #mrprism .eye:before {
 	background: #222;
 	transition: bottom .5s ease, right .5s ease;
 }
-html.awake #mrprism .eye:after {
-	/* pupil */
+html.awake #mrprism .pupil {
 	display: block;
 	animation-name: pupilMovement;
 	animation-duration: 12s;
