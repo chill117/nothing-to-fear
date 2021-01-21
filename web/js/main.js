@@ -2,24 +2,12 @@ var app = app || {};
 
 $(function() {
 
-	var blinkEye = function() {
-		$('#mrprism').addClass('blinking');
-		_.delay(function() {
-			$('#mrprism').removeClass('blinking');
-		}, 100);
-	};
-
-	var blinkVideo = function() {
-		$('.video-cover').addClass('visible');
-		_.delay(function() {
-			$('.video-cover').removeClass('visible');
-		}, 100);
-	};
-
 	var blink = function() {
 		if (!sleeping) {
-			blinkEye();
-			blinkVideo();
+			$('html').addClass('blinking');
+			_.delay(function() {
+				$('html').removeClass('blinking');
+			}, 100);
 		}
 	};
 
@@ -43,7 +31,7 @@ $(function() {
 
 	var fadeVolumeAudioPlayer = function(audioEl, targetVolume, done) {
 		targetVolume = Math.min(100, Math.max(0, Math.round(targetVolume)));
-		var increment = 20;
+		var increment = 10;
 		var currentVolume;
 		async.until(function(next) {
 			currentVolume = Math.round(audioEl.volume * 100);
@@ -56,7 +44,7 @@ $(function() {
 				newVolume -= increment;
 			}
 			audioEl.volume = Math.min(100, Math.max(0, newVolume)) / 100;
-			_.delay(next, 100);
+			_.delay(next, 35);
 		}, done || _.noop);
 	};
 
@@ -138,13 +126,13 @@ $(function() {
 			console.log('Go to sleep, Mr. Prism.');
 			stopBlinking();
 			$('html').removeClass('awake').addClass('falling-asleep');
+			changeAudioTrack('lionel_richie_all_night_long');
 			_.delay(function() {
-				$('html').removeClass('falling-asleep');
+				$('html').removeClass('falling-asleep').addClass('asleep');
 				var video = document.querySelector("#watch video.webcam");
 				video.srcObject.getTracks().forEach(function(track) {
 					track.stop();
 				});
-				changeAudioTrack('lionel_richie_all_night_long');
 				playDreamVideo();
 			}, 1500);
 			_.delay(wakeyTime, sleepDuration);
@@ -155,7 +143,7 @@ $(function() {
 	var wakeyTime = function() {
 		if (sleeping) {
 			console.log('Time to wake up, Mr. Prism.');
-			$('html').removeClass('falling-asleep').addClass('waking-up');
+			$('html').removeClass('falling-asleep').removeClass('asleep').addClass('waking-up');
 			_.delay(function() {
 				$('html').removeClass('waking-up').addClass('awake');
 				initializeWebCamVideoStream();
