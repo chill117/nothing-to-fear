@@ -132,7 +132,7 @@ $(function() {
 	}
 
 	var sleeping = false;
-	var maxSleepTime = 3 * 60 * 10000;
+	var sleepDuration = 3 * 60 * 1000;
 	var sleepTime = function() {
 		if (!sleeping) {
 			console.log('Go to sleep, Mr. Prism.');
@@ -147,7 +147,7 @@ $(function() {
 				changeAudioTrack('lionel_richie_all_night_long');
 				playDreamVideo();
 			}, 1500);
-			_.delay(wakeyTime, maxSleepTime);
+			_.delay(wakeyTime, sleepDuration);
 			sleeping = true;
 		}
 	};
