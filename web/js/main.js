@@ -42,7 +42,7 @@ $(function() {
 				newVolume += increment;
 			} else {
 				newVolume -= increment;
-			}
+			}stopCyclingMusic
 			audioEl.volume = Math.min(100, Math.max(0, newVolume)) / 100;
 			_.delay(next, 35);
 		}, done || _.noop);
@@ -119,6 +119,32 @@ $(function() {
 		console.log(error);
 	}
 
+	var musicTracks = [
+		'a_healthy_dystopia',
+		'home_sweet_homeland',
+	];
+	var cycleIntervalTime = 2 * 60 * 1000;
+	var trackNumber = 0;
+	var cycleMusicTimeout;
+	var doCycleMusic = function() {
+		if (!sleeping) {
+			trackNumber++;
+			if (_.isUndefined(musicTracks[trackNumber])) {
+				trackNumber = 0;
+			}
+			changeAudioTrack(musicTracks[trackNumber]);
+			cycleMusicTimeout = _.delay(doCycleMusic, cycleIntervalTime);
+		}
+	};
+	var startCyclingMusic = function() {
+		clearTimeout(cycleMusicTimeout);
+		cycleMusicTimeout = _.delay(doCycleMusic, cycleIntervalTime);
+	};
+	var stopCyclingMusic = function() {
+		clearTimeout(cycleMusicTimeout);
+	};
+	startCyclingMusic();
+
 	var sleeping = false;
 	var sleepDuration = 3 * 60 * 1000;
 	var sleepTime = function() {
@@ -126,6 +152,7 @@ $(function() {
 			console.log('Go to sleep, Mr. Prism.');
 			stopBlinking();
 			$('html').removeClass('awake').addClass('falling-asleep');
+			stopCyclingMusic();
 			changeAudioTrack('lionel_richie_all_night_long');
 			_.delay(function() {
 				$('html').removeClass('falling-asleep').addClass('asleep');
@@ -147,9 +174,10 @@ $(function() {
 			_.delay(function() {
 				$('html').removeClass('waking-up').addClass('awake');
 				initializeWebCamVideoStream();
-				changeAudioTrack('a_healthy_dystopia');
+				changeAudioTrack(musicTracks[trackNumber]);
 				playDreamVideo();
 				startBlinking();
+				startCyclingMusic();
 			}, 300);
 			sleeping = false;
 		}
