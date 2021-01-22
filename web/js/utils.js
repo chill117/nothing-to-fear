@@ -3,6 +3,7 @@ var app = app || {};
 app.utils = (function() {
 
 	var renderQrCode = function($target, data, done) {
+		done = done || _.noop;
 		// https://github.com/soldair/node-qrcode#usage
 		var options = {
 			width: $target.width(),
