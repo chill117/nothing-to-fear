@@ -7,6 +7,7 @@
     "build": "make all",
     "server": "node ./server.js",
     "start": "npm run build && npm run server",
+    "ngrok-tunnel": "ngrok http -region eu 3000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
