@@ -1,6 +1,6 @@
 {
   "name": "nothing-to-fear",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Nothing to hide, nothing to fear. Pay a price for your privacy or lack thereof.",
   "main": "server.js",
   "scripts": {
