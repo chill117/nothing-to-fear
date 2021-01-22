@@ -1,6 +1,10 @@
 var app = app || {};
+app.config = app.config || {};
 
 $(function() {
+
+	app.config.payAmount = 10;// sats
+	app.config.sleepDuration = 2 * 60 * 1000;// milliseconds
 
 	var blink = function() {
 		if (!sleeping) {
@@ -26,7 +30,6 @@ $(function() {
 	var stopBlinking = function() {
 		clearTimeout(blinkTimeout);
 	};
-
 	startBlinking();
 
 	var fadeVolumeAudioPlayer = function(audioEl, targetVolume, done) {
@@ -146,7 +149,6 @@ $(function() {
 	startCyclingMusic();
 
 	var sleeping = false;
-	var sleepDuration = 3 * 60 * 1000;
 	var sleepTime = function() {
 		if (!sleeping) {
 			console.log('Go to sleep, Mr. Prism.');
@@ -160,9 +162,8 @@ $(function() {
 				video.srcObject.getTracks().forEach(function(track) {
 					track.stop();
 				});
-				playDreamVideo();
 			}, 1500);
-			_.delay(wakeyTime, sleepDuration);
+			_.delay(wakeyTime, app.config.sleepDuration);
 			sleeping = true;
 		}
 	};
@@ -175,7 +176,6 @@ $(function() {
 				$('html').removeClass('waking-up').addClass('awake');
 				initializeWebCamVideoStream();
 				changeAudioTrack(musicTracks[trackNumber]);
-				playDreamVideo();
 				startBlinking();
 				startCyclingMusic();
 			}, 300);
@@ -185,23 +185,17 @@ $(function() {
 	app.sleepTime = sleepTime;
 	app.wakeyTime = wakeyTime;
 
-	var playDreamVideo = function() {
-		var $video = $('#video-dream');
-		if ($video[0]) {
-
-		}
-	};
-
 	$.get('/lnurls')
 		.done(function(lnurls) {
 			if (lnurls.payRequest) {
 				return renderQrCode(lnurls.payRequest);
 			}
+			var msats = app.config.payAmount * 1000;
 			$.post('/lnurl', {
 				tag: 'payRequest',
-				minSendable: 100000,
-				maxSendable: 100000,
-				metadata: '[["text/plain","Nothing to Fear: 5 minutes of privacy"]]',
+				minSendable: msats,
+				maxSendable: msats,
+				metadata: '[["text/plain","Nothing to Fear: Pay for your privacy"]]',
 			})
 				.done(function(encoded) {
 					renderQrCode(encoded);
