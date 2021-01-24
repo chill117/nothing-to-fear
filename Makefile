@@ -100,6 +100,7 @@ $(BUILD_DEPS_JS): $(DEPS_JS_FILES)
 	done
 
 APP_JS_FILES=$(WEB)/js/utils.js\
+$(WEB)/js/socket.js\
 $(WEB)/js/main.js
 JS_FILES=$(BUILD_DEPS_JS) $(APP_JS_FILES)
 $(BUILD_ALL_JS): $(BUILD_DEPS_JS) $(WEB)/js/*.js

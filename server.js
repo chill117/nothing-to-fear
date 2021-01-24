@@ -89,6 +89,7 @@ webApp.post('/lnurl',
 			const hash = lnurlServer.hash(secret);
 			req.session.lnurls[tag] = { encoded, hash };
 			map.session.set(hash, req.session);
+			console.log('created lnurl', { hash, session: req.session.id });
 			res.send(encoded);
 		}).catch(next);
 	}
@@ -108,7 +109,20 @@ webApp.use(function(error, req, res, next) {
 });
 
 webApp.server = http.createServer(webApp);
-webApp.wss = new WebSocket.Server({ clientTracking: false, noServer: true });
+webApp.wss = new WebSocket.Server({ clientTracking: true, noServer: true });
+
+const pingInterval = setInterval(function() {
+	console.log(webApp.wss.clients.size, 'client(s) connected');
+	webApp.wss.clients.forEach(function(ws) {
+		if (ws.isAlive === false) return ws.terminate();
+		ws.isAlive = false;
+		ws.ping(_.noop);
+	});
+}, 20 * 1000);
+
+webApp.wss.on('close', function() {
+	clearInterval(pingInterval);
+});
 
 webApp.server.on('upgrade', function(req, socket, head) {
 	sessionParser(req, {}, function() {
@@ -124,6 +138,10 @@ webApp.server.on('upgrade', function(req, socket, head) {
 
 webApp.wss.on('connection', function(ws, req) {
 	map.ws.set(req.session.id, ws);
+	ws.isAlive = true;
+	ws.on('pong', function() {
+		ws.isAlive = true;
+	});
 	ws.on('close', function() {
 		map.ws.delete(req.session.id);
 	});
@@ -135,11 +153,7 @@ webApp.server.listen(config.web.port, config.web.host, function() {
 });
 
 _.each([
-	'request:received',
-	'request:processing',
 	'request:processed',
-	'request:failed',
-	'login',
 ], function(event) {
 	lnurlServer.on(event, function(data) {
 		try {

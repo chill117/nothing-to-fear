@@ -80,48 +80,6 @@ $(function() {
 		}
 	};
 
-	try {
-		// Initialize websocket connection.
-		var ws = app.ws = (function() {
-			var protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-			var url = protocol + '//' + location.host;
-			return new WebSocket(url);
-		})();
-		ws.onerror = function(error) {
-			console.log('WebSocket ERROR', error);
-		};
-		ws.onopen = function() {
-			console.log('WebSocket connection established');
-		};
-		ws.onclose = function() {
-			console.log('WebSocket connection closed');
-			ws = app.ws = null;
-		};
-		ws.onmessage = function(message) {
-			try {
-				console.log('WebSocket data received:', message.data);
-				var messageData = JSON.parse(message.data);
-				var eventName = messageData.event || null;
-				if (!eventName) return;
-				var tag = messageData.tag || null;
-				var method = messageData.data.method || null;
-				if (!tag) return;
-				if (!method) return;
-				if (
-					tag === 'payRequest' &&
-					method === 'action' &&
-					eventName === 'request:processed'
-				) {
-					sleepTime();
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		};
-	} catch (error) {
-		console.log(error);
-	}
-
 	var musicTracks = [
 		'a_healthy_dystopia',
 		'home_sweet_homeland',
@@ -158,10 +116,12 @@ $(function() {
 			changeAudioTrack('lionel_richie_all_night_long');
 			_.delay(function() {
 				$('html').removeClass('falling-asleep').addClass('asleep');
-				var video = document.querySelector("#watch video.webcam");
-				video.srcObject.getTracks().forEach(function(track) {
-					track.stop();
-				});
+				var video = document.querySelector('#watch video.webcam');
+				if (video && video.srcObject) {
+					video.srcObject.getTracks().forEach(function(track) {
+						track.stop();
+					});
+				}
 			}, 1500);
 			_.delay(wakeyTime, app.config.sleepDuration);
 			sleeping = true;
@@ -185,28 +145,47 @@ $(function() {
 	app.sleepTime = sleepTime;
 	app.wakeyTime = wakeyTime;
 
-	$.get('/lnurls')
-		.done(function(lnurls) {
-			if (lnurls.payRequest) {
-				return renderQrCode(lnurls.payRequest);
-			}
-			var msats = app.config.payAmount * 1000;
-			$.post('/lnurl', {
-				tag: 'payRequest',
-				minSendable: msats,
-				maxSendable: msats,
-				metadata: '[["text/plain","Nothing to Fear: Pay for your privacy"]]',
-			})
-				.done(function(encoded) {
-					renderQrCode(encoded);
+	var getLnurlPay = function(done) {
+		done = done || _.noop;
+		async.retry({
+			interval: 5000,
+			times: ((86400 * 7) / 5) * 1000,// retry for up to 1 week
+		}, function(next) {
+			$.get('/lnurls')
+				.done(function(lnurls) {
+					if (lnurls.payRequest) {
+						return next(null, lnurls.payRequest)
+					}
+					var msats = app.config.payAmount * 1000;
+					$.post('/lnurl', {
+						tag: 'payRequest',
+						minSendable: msats,
+						maxSendable: msats,
+						metadata: '[["text/plain","Nothing to Fear: Pay for your privacy"]]',
+					})
+						.done(function(encoded) {
+							next(null, encoded);
+						})
+						.fail(next);
 				})
-				.fail(function(error) {
-					console.log('Failed to create new LNURL', error);
-				});
-		})
-		.fail(function(error) {
-			console.log('Failed to get current session LNURLs', error);
+				.fail(next);
+		}, function(error, encoded) {
+			if (error) return done(error);
+			done(null, encoded);
 		});
+	};
+
+	var refreshLnurlPayQrCode = function(done) {
+		done = done || _.noop;
+		getLnurlPay(function(error, encoded) {
+			if (error) {
+				done(error);
+			} else {
+				renderQrCode(encoded);
+				done();
+			}
+		});
+	};
 
 	var renderQrCode = function(encoded) {
 		var $qrcode = $('#pay .qrcode');
@@ -261,7 +240,7 @@ $(function() {
 
 	var initializeWebCamVideoStream = function() {
 		var video = document.querySelector("#watch video.webcam");
-		if (navigator.mediaDevices.getUserMedia) {
+		if (video && navigator.mediaDevices.getUserMedia) {
 			navigator.mediaDevices.getUserMedia({ video: true })
 			.then(function(stream) {
 				video.srcObject = stream;
@@ -272,7 +251,39 @@ $(function() {
 		}
 	};
 
+	app.socket = new app.Socket({
+		autoReconnect: false,
+		onClose: function() {
+			refreshLnurlPayQrCode(function(error) {
+				if (!error) {
+					app.socket.reconnect();
+				}
+			});
+		},
+		onMessage: function(message) {
+			try {
+				var messageData = JSON.parse(message.data);
+				var eventName = messageData.event || null;
+				if (!eventName) return;
+				var tag = messageData.tag || null;
+				var method = messageData.data.method || null;
+				if (!tag) return;
+				if (!method) return;
+				if (
+					tag === 'payRequest' &&
+					method === 'action' &&
+					eventName === 'request:processed'
+				) {
+					sleepTime();
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		}
+	});
+
 	resizeQrCodeElements();
+	refreshLnurlPayQrCode();
 	initializeWebCamVideoStream();
 
 });
