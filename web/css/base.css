@@ -324,8 +324,15 @@ html.falling-asleep #watch .video-cover {
 	transition: opacity 1s ease, width 2.5s ease;
 	margin-right: 2%;
 }
+#pay .propaganda {
+	font-family: 'OpenSans';
+}
 html.awake #pay {
 	width: 26%;
+	opacity: .7;
+}
+html.awake #pay:hover {
+	transition: opacity .2s ease, width 2.5s ease;
 	opacity: 1;
 }
 #pay .qrcode-wrap {
@@ -358,19 +365,30 @@ html.awake #pay {
 	box-sizing: border-box;
 	padding: 0 2rem;
 }
-#footer .author {
-	float: right;
-	font-size: .9rem;
+#footer .author,
+#footer .info {
+	position: relative;
+	z-index: 10;
+	float: left;
+	font-size: .8rem;
 	line-height: 4rem;
 	opacity: .7;
 	transition: opacity .2s ease;
 }
-#footer .author:hover {
+#footer .author:hover,
+#footer .info:hover {
 	opacity: 1;
+}
+#footer .info {
+	line-height: 1.5rem;
+}
+#footer .author {
+	float: right;
 }
 
 #audio {
 	position: absolute;
+	z-index: 5;
 	left: 0;
 	bottom: .5rem;
 	width: 100%;
