@@ -1,9 +1,12 @@
 const _ = require('underscore');
 const bodyParser = require('body-parser');
 const express = require('express');
+const Handlebars = require('express-handlebars');
 const http = require('http');
 const lnurl = require('lnurl');
 const { createHash, HttpError } = require('lnurl/lib');
+const path = require('path');
+const pkg = require('./package.json');
 const session = require('express-session');
 const WebSocket = require('ws');
 
@@ -21,6 +24,43 @@ lnurlServer.once('listening', function() {
 });
 
 const webApp = express();
+
+const viewsDir = path.join(__dirname, 'views');
+
+const hbs = Handlebars.create({
+	defaultLayout: 'main',
+	extname: '.html',
+	partialsDir: [
+		path.join(viewsDir, 'partials'),
+	],
+});
+
+webApp.engine('.html', hbs.engine);
+webApp.set('view engine', '.html');
+webApp.set('views', viewsDir);
+webApp.enable('view cache');
+
+// Define custom render method on response object:
+webApp.use(function(req, res, next) {
+	const render = res.render.bind(res);
+	res.render = function(filePath, context) {
+		const baseUrl = config.web.url;
+		context = _.defaults(context || {}, {
+			baseUrl,
+			canonicalUrl: baseUrl + req.url,
+			headExtraHtml: config.web.headExtraHtml || null,
+			layout: 'main',
+			template: filePath,
+			version: pkg.version,
+		});
+		console.log({context})
+		// Do NOT use a callback with render here.
+		// For details, see:
+		// https://expressjs.com/en/4x/api.html#res.render
+		render(filePath, context);
+	};
+	next();
+});
 
 // Sessions middleware - to separate requests by session and provide real-time updates.
 const sessionParser = session(config.web.session);
@@ -90,6 +130,11 @@ webApp.post('/lnurl',
 		}).catch(next);
 	}
 );
+
+webApp.get('/', function(req, res, next) {
+	console.log('hi! index')
+	res.render('index');
+});
 
 webApp.use('*', function(req, res, next) {
 	next(new HttpError('Not Found', 404));

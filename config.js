@@ -19,6 +19,7 @@ let config = {
 		port: parseInt(process.env.NOTHING_TO_FEAR_WEB_PORT || 8080),
 		url: process.env.NOTHING_TO_FEAR_WEB_URL || null,
 		session: JSON.parse(process.env.NOTHING_TO_FEAR_WEB_SESSION || '{"secret":"","resave":true,"saveUninitialized":false,"proxy":false,"cookie":{"httpOnly":true,"expires":false,"path":"/","sameSite":true,"secure":false}}'),
+		headExtraHtml: process.env.NOTHING_TO_FEAR_WEB_HEAD_EXTRA_HTML || null,
 	},
 };
 

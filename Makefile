@@ -38,8 +38,7 @@ fonts\
 images\
 video
 
-all: $(PUBLIC)/index.html\
-$(PUBLIC_ALL_CSS)\
+all: $(PUBLIC_ALL_CSS)\
 $(PUBLIC_ALL_JS)\
 audio\
 fonts\
@@ -49,10 +48,6 @@ video
 clean:
 	# Delete build and output files:
 	rm -rf $(BUILD) $(PUBLIC)
-
-$(PUBLIC)/index.html: package.json $(WEB)/index.html
-	mkdir -p $$(dirname $@)
-	cp $(WEB)/index.html $@
 
 audio:
 	mkdir -p $(PUBLIC)/audio/
