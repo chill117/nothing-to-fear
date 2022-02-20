@@ -1,13 +1,13 @@
 {
   "name": "nothing-to-fear",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "Nothing to hide, nothing to fear. Pay a price for your privacy or lack thereof.",
   "main": "server.js",
   "scripts": {
     "build": "make all",
     "server": "node ./server.js",
     "start": "npm run build && npm run server",
-    "ngrok-tunnel": "ngrok http -region eu 3000",
+    "tunnel": "ngrok http -region eu 3000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
@@ -16,14 +16,15 @@
   },
   "license": "MIT",
   "dependencies": {
-    "async": "3.2.0",
-    "express": "4.17.1",
-    "express-session": "1.17.1",
+    "async": "3.2.3",
+    "dotenv": "16.0.0",
+    "express": "4.17.3",
+    "express-session": "1.17.2",
     "jquery": "3.6.0",
-    "lnurl": "0.12.2",
+    "lnurl": "0.20.2",
     "open-sans-fontface": "https://github.com/chill117/open-sans/archive/1.4.2.tar.gz",
-    "qrcode": "1.4.4",
-    "underscore": "1.13.1",
-    "ws": "7.4.5"
+    "qrcode": "1.5.0",
+    "underscore": "1.13.2",
+    "ws": "8.5.0"
   }
 }

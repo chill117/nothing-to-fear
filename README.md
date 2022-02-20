@@ -36,9 +36,6 @@ npm start
 ```
 Do you see something like the following in your terminal?
 ```
-Mock c-lightning JSON-RPC API listening at /path/to/nothing-to-fear/c-lightning.sock
-Mock c-lightning listening for TCP connections at 127.0.0.1:9735
-Mock c-lightning is ready
 Web server listening at http://localhost:8080
 Lnurl server listening at http://localhost:3000
 ```

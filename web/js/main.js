@@ -262,18 +262,7 @@ $(function() {
 		},
 		onMessage: function(message) {
 			try {
-				var messageData = JSON.parse(message.data);
-				var eventName = messageData.event || null;
-				if (!eventName) return;
-				var tag = messageData.tag || null;
-				var method = messageData.data.method || null;
-				if (!tag) return;
-				if (!method) return;
-				if (
-					tag === 'payRequest' &&
-					method === 'action' &&
-					eventName === 'request:processed'
-				) {
+				if (message.data === 'paying') {
 					sleepTime();
 				}
 			} catch (error) {

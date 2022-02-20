@@ -3,8 +3,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const http = require('http');
 const lnurl = require('lnurl');
-const { HttpError } = lnurl.Server;
-const path = require('path');
+const { createHash, HttpError } = require('lnurl/lib');
 const session = require('express-session');
 const WebSocket = require('ws');
 
@@ -12,7 +11,8 @@ const WebSocket = require('ws');
 	For a list of possible options, see:
 	https://github.com/chill117/lnurl-node#options-for-createserver-method
 */
-const config = require('./config.json');
+const config = require('./config');
+console.log({config})
 const lnurlServer = lnurl.createServer(config.lnurl);
 
 lnurlServer.once('listening', function() {
@@ -21,10 +21,6 @@ lnurlServer.once('listening', function() {
 });
 
 const webApp = express();
-
-if (!config.web.session.secret) {
-	config.web.session.secret = lnurlServer.generateRandomKey(32, 'base64');
-}
 
 // Sessions middleware - to separate requests by session and provide real-time updates.
 const sessionParser = session(config.web.session);
@@ -86,7 +82,7 @@ webApp.post('/lnurl',
 		const params = _.pick(req.body, tagParams[tag]);
 		lnurlServer.generateNewUrl(tag, params, { uses: 0 }).then(result => {
 			const { encoded, secret, url } = result;
-			const hash = lnurlServer.hash(secret);
+			const hash = createHash(secret);
 			req.session.lnurls[tag] = { encoded, hash };
 			map.session.set(hash, req.session);
 			console.log('created lnurl', { hash, session: req.session.id });
@@ -152,30 +148,19 @@ webApp.server.listen(config.web.port, config.web.host, function() {
 	console.log(`Web server listening at http://${host}:${port}`);
 });
 
-_.each([
-	'request:processed',
-], function(event) {
-	lnurlServer.on(event, function(data) {
-		try {
-			const { hash } = data;
-			const session = map.session.get(hash);
-			if (!session) return;
-			const ws = map.ws.get(session.id);
-			if (!ws) return;
-			const tag = _.findKey(session.lnurls, function(item) {
-				return item.hash === hash;
-			});
-			if (!tag) return;
-			const req = data.req || null
-			data = _.omit(data, 'hash', 'req');
-			if (req) {
-				data = _.extend({}, data, _.pick(req, 'headers', 'query', 'url'));
-			}
-			ws.send(JSON.stringify({ data, event, tag }));
-		} catch (error) {
-			console.error(error);
+lnurlServer.on('payRequest:action:processed', function(event) {
+	const { secret, params, result } = event;
+	const { id, invoice } = result;
+	// `id` - non-standard reference ID for the new invoice, can be NULL if none provided
+	// `invoice` - bolt11 invoice
+	const hash = createHash(secret);
+	const session = map.session.get(hash);
+	if (session) {
+		const ws = map.ws.get(session.id);
+		if (ws) {
+			ws.send('paying');
 		}
-	});
+	}
 });
 
 process.on('uncaughtException', (error, origin) => {

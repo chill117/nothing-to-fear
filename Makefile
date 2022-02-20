@@ -88,7 +88,7 @@ $(PUBLIC_ALL_CSS): $(BUILD_ALL_CSS)
 	cp $(BUILD_ALL_CSS) $(PUBLIC_ALL_CSS)
 
 DEPS_JS_FILES=node_modules/async/dist/async.min.js\
-node_modules/qrcode/build/qrcode.min.js\
+node_modules/qrcode/build/qrcode.js\
 node_modules/jquery/dist/jquery.min.js\
 node_modules/underscore/underscore-min.js
 $(BUILD_DEPS_JS): $(DEPS_JS_FILES)
