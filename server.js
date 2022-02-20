@@ -15,7 +15,6 @@ const WebSocket = require('ws');
 	https://github.com/chill117/lnurl-node#options-for-createserver-method
 */
 const config = require('./config');
-console.log({config})
 const lnurlServer = lnurl.createServer(config.lnurl);
 
 lnurlServer.once('listening', function() {
@@ -53,7 +52,6 @@ webApp.use(function(req, res, next) {
 			template: filePath,
 			version: pkg.version,
 		});
-		console.log({context})
 		// Do NOT use a callback with render here.
 		// For details, see:
 		// https://expressjs.com/en/4x/api.html#res.render
@@ -132,7 +130,6 @@ webApp.post('/lnurl',
 );
 
 webApp.get('/', function(req, res, next) {
-	console.log('hi! index')
 	res.render('index');
 });
 
